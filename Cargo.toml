@@ -1,0 +1,4 @@
+[package]
+name = "playnow"
+version = "0.1.0"
+authors = ["XMPPwocky <nttheis@gmail.com>"]
