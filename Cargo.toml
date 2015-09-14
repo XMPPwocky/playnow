@@ -2,3 +2,8 @@
 name = "playnow"
 version = "0.1.0"
 authors = ["XMPPwocky <nttheis@gmail.com>"]
+
+[dependencies]
+iron = "0.2.2"
+logger = "0.0.3"
+router = "0.0.15"
