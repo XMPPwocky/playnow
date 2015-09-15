@@ -31,7 +31,7 @@ fn main() {
     let mut mount = mount::Mount::new();
     mount
         .mount("/", router)
-        .mount("/static", staticfile::Static::new(Path::new("static")));
+        .mount("/css", staticfile::Static::new(Path::new("static/css")));
 
     let mut chain = Chain::new(mount);
     chain.link_after(hbs::HandlebarsEngine::new("./templates", ".hbs"));
@@ -62,9 +62,10 @@ fn mainpage(_req: &mut Request) -> IronResult<Response> {
 fn display_prefs(_req: &mut Request) -> IronResult<Response> {
     let mut resp = Response::new();
 
-    let data = ();
+    let mut data = BTreeMap::new();
+    data.insert("title".to_string(), "Preferences".to_json());
 
-    resp.set_mut(Template::new("prefs", data)).set_mut(status::Ok);
+    resp.set_mut(Template::new("display_prefs", data)).set_mut(status::Ok);
     Ok(resp)
 }
 
