@@ -1,9 +1,14 @@
 {{# partial "content" }}
-update yer preferences in here
+{{#with contents}}
+{{#if updated}}
+<h3>Updated OK.</h3>
+{{/if}}
 <form method="POST">
+<input type="checkbox" id="foo" name="foo" {{#if prefs.foo}}checked{{/if}}>
+<label for="foo">Foo?</label>
 <input type="submit" id="submit">
 </form>
-
+{{/with}}
 {{/partial}}
 
 {{> base}}
