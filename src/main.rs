@@ -36,9 +36,8 @@ fn main() {
         );
 
     let mut mount = mount::Mount::new();
-    mount
-        .mount("/", router)
-        .mount("/css", staticfile::Static::new(Path::new("static/css")));
+    mount.mount("/", router)
+         .mount("/css", staticfile::Static::new(Path::new("static/css")));
 
     let mut chain = Chain::new(mount);
     chain.link_after(hbs::HandlebarsEngine::new("./templates", ".hbs"));
@@ -54,11 +53,12 @@ fn maybe_add_logger(chain: &mut Chain) {
 }
 // no logging in release builds
 #[cfg(not(debug_assertions))]
-fn maybe_add_logger(_: &mut Chain) {}
+fn maybe_add_logger(_: &mut Chain) {
+}
 
 struct Page<'a, Contents> {
     title: &'a str,
-    contents: Contents 
+    contents: Contents,
 }
 // #[derive] doesn't like the type parameters here
 impl<'a, Contents: ToJson> Page<'a, Contents> {
@@ -73,10 +73,7 @@ impl<'a, Contents: ToJson> Page<'a, Contents> {
 fn mainpage_handler(_req: &mut Request) -> IronResult<Response> {
     let mut resp = Response::new();
 
-    let data = Page {
-        title: "Home",
-        contents: () 
-    };
+    let data = Page { title: "Home", contents: () };
 
     resp.set_mut(Template::new("index", data.to_json())).set_mut(status::Ok);
     Ok(resp)

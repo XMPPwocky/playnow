@@ -18,7 +18,7 @@ pub fn get_prefs(_req: &Request) -> Option<Prefs> {
 #[derive(ToJson)]
 pub struct PrefsPage {
     prefs: Prefs,
-    updated: bool
+    updated: bool,
 }
 
 
@@ -29,9 +29,10 @@ pub fn display_prefs_handler(req: &mut Request) -> IronResult<Response> {
         title: "Preferences",
         contents: PrefsPage {
             updated: false,
-            prefs: get_prefs(req).unwrap_or_default() 
-        }
-    }.to_json();
+            prefs: get_prefs(req).unwrap_or_default(),
+        },
+    }
+                   .to_json();
 
     resp.set_mut(Template::new("display_prefs", data)).set_mut(status::Ok);
     Ok(resp)
@@ -45,11 +46,9 @@ pub fn update_prefs_handler(req: &mut Request) -> IronResult<Response> {
     let mut resp = Response::new();
     let data = Page {
         title: "Preferences",
-        contents: PrefsPage {
-            updated: true,
-            prefs: new_prefs 
-        }
-    }.to_json();
+        contents: PrefsPage { updated: true, prefs: new_prefs },
+    }
+                   .to_json();
 
     resp.set_mut(Template::new("display_prefs", data)).set_mut(status::Ok);
     Ok(resp)
