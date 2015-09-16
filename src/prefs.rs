@@ -4,19 +4,20 @@ use iron::status;
 use iron::headers;
 use cookie::Cookie;
 use Page;
-use std::default::Default;
 use urlencoded::UrlEncodedBody;
-use rustc_serialize::json::ToJson;
+use rustc_serialize::json::{self, ToJson};
 
 // FIXME: derived Default won't do well later
-#[derive(ToJson, Default, Clone)]
+#[derive(ToJson, RustcDecodable, Default, Clone, Debug)]
 pub struct Prefs {
     pub foo: bool,
 }
 
-pub fn get_prefs(_req: &Request) -> Option<Prefs> {
-    // FIXME: pull it out of the request
-    Some(Default::default())
+pub fn get_prefs(req: &Request) -> Option<Prefs> {
+    req.headers
+       .get::<headers::Cookie>()
+       .and_then(|cookies| cookies.iter().find(|cookie| &cookie.name == "playnow_prefs"))
+       .and_then(|cookie| json::decode::<Prefs>(&cookie.value).ok())
 }
 
 #[derive(ToJson)]
@@ -44,17 +45,21 @@ pub fn display_prefs_handler(req: &mut Request) -> IronResult<Response> {
 
 pub fn update_prefs_handler(req: &mut Request) -> IronResult<Response> {
     // FIXME: Need CSRF token here!!!
-    // FIXME: change this to parse out of body & set cookies
     let new_prefs = match req.get_ref::<UrlEncodedBody>() {
         Ok(ref hashmap) => {
             Some(Prefs {
                 foo: hashmap.get("foo")
                             .and_then(|x| x.get(0))
-                            .and_then(|x| ::std::str::FromStr::from_str(x).ok())
+                            .map(|x| {
+                                match x as &str {
+                                    "on" => true,
+                                    _ => false,
+                                }
+                            })
                             .unwrap_or(false),
             })
         }
-        Err(e) => {
+        Err(_) => {
             None
         }
     };

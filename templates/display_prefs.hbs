@@ -5,6 +5,7 @@
 {{/if}}
 <form method="POST">
 <input type="checkbox" id="foo" name="foo" {{#if prefs.foo}}checked{{/if}}>
+<input type="hidden" name="hacky_browser_workaround" value="barf">
 <label for="foo">Foo?</label>
 <input type="submit" id="submit">
 </form>
