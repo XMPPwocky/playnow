@@ -11,8 +11,9 @@ extern crate logger;
 extern crate handlebars_iron as hbs;
 extern crate rustc_serialize;
 extern crate staticfile;
-extern crate cookie;
 extern crate mount;
+extern crate cookie;
+extern crate urlencoded;
 
 use rustc_serialize::json::{ToJson, Json};
 use std::path::Path;
@@ -36,8 +37,7 @@ fn main() {
         );
 
     let mut mount = mount::Mount::new();
-    mount.mount("/", router)
-         .mount("/css", staticfile::Static::new(Path::new("static/css")));
+    mount.mount("/", router).mount("/css", staticfile::Static::new(Path::new("static/css")));
 
     let mut chain = Chain::new(mount);
     chain.link_after(hbs::HandlebarsEngine::new("./templates", ".hbs"));
