@@ -66,9 +66,7 @@ pub fn update_prefs_handler(req: &mut Request) -> IronResult<Response> {
     let new_prefs = new_prefs.or(get_prefs(&req)).unwrap_or_default();
 
     let mut resp = Response::new();
-    let data = Page {
-        contents: PrefsPage { updated: updated, prefs: new_prefs.clone() },
-    }
+    let data = Page { contents: PrefsPage { updated: updated, prefs: new_prefs.clone() } }
                    .to_json();
 
     resp.set_mut(Template::new("display_prefs", data)).set_mut(status::Ok);

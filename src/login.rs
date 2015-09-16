@@ -10,10 +10,7 @@ use rustc_serialize::json::{self, ToJson};
 pub fn display_login_handler(req: &mut Request) -> IronResult<Response> {
     let mut resp = Response::new();
 
-    let data = Page {
-        contents: ()
-    }
-    .to_json();
+    let data = Page { contents: () }.to_json();
 
     resp.set_mut(Template::new("login", data)).set_mut(status::Ok);
     Ok(resp)
@@ -21,17 +18,15 @@ pub fn display_login_handler(req: &mut Request) -> IronResult<Response> {
 
 pub fn process_login_handler(req: &mut Request) -> IronResult<Response> {
     // FIXME: Need CSRF token here!!!
-    let new_steamid = req.get_ref::<UrlEncodedBody>().ok()
-        .and_then(|hashmap| hashmap.get("steamid"))
-        .and_then(|x| x.get(0))
-        .cloned()
-        .unwrap_or(String::new());;
+    let new_steamid = req.get_ref::<UrlEncodedBody>()
+                         .ok()
+                         .and_then(|hashmap| hashmap.get("steamid"))
+                         .and_then(|x| x.get(0))
+                         .cloned()
+                         .unwrap_or(String::new());;
 
     let mut resp = Response::new();
-    let data = Page {
-        contents: () 
-    }
-                   .to_json();
+    let data = Page { contents: () }.to_json();
 
     resp.set_mut(Template::new("display_prefs", data)).set_mut(status::Ok);
 
