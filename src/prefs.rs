@@ -10,7 +10,7 @@ use rustc_serialize::json::{self, ToJson};
 // FIXME: derived Default won't do well later
 #[derive(ToJson, RustcDecodable, Default, Clone, Debug)]
 pub struct Prefs {
-pub foo: bool,
+    pub foo: bool,
 }
 
 pub fn get_prefs(req: &Request) -> Option<Prefs> {
