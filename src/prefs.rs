@@ -31,7 +31,6 @@ pub fn display_prefs_handler(req: &mut Request) -> IronResult<Response> {
     let mut resp = Response::new();
 
     let data = Page {
-        title: "Preferences",
         contents: PrefsPage {
             updated: false,
             prefs: get_prefs(req).unwrap_or_default(),
@@ -68,7 +67,6 @@ pub fn update_prefs_handler(req: &mut Request) -> IronResult<Response> {
 
     let mut resp = Response::new();
     let data = Page {
-        title: "Preferences",
         contents: PrefsPage { updated: updated, prefs: new_prefs.clone() },
     }
                    .to_json();

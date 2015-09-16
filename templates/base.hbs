@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>PlayNow | {{title}}</title>
+    <title>{{#block "title" }}PlayNow{{/block}}</title>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/styles.css">
@@ -31,6 +31,7 @@
               <li><a href="/">Home</a></li>
               <li><a href="/play">Play!</a></li>
               <li><a href="/prefs">My Prefs</a></li>
+              <li><a href="/login">Log In</a></li>
           </ul>
         </div>
       </div>
@@ -39,7 +40,7 @@
 
     <div class="container">
       <div class="content">
-          <h1>{{title}}</h1>
+          <h1>{{#block "header_title" }}PlayNow{{/block}}</h1>
           {{#block "content" }}
           {{/block}}
       </div>

@@ -64,15 +64,13 @@ fn maybe_add_logger(chain: &mut Chain) {
 fn maybe_add_logger(_: &mut Chain) {
 }
 
-struct Page<'a, Contents> {
-    title: &'a str,
+struct Page<Contents> {
     contents: Contents,
 }
 // #[derive] doesn't like the type parameters here
-impl<'a, Contents: ToJson> Page<'a, Contents> {
+impl<Contents: ToJson> Page<Contents> {
     fn to_json(&self) -> Json {
         let mut d = BTreeMap::new();
-        d.insert("title".to_string(), self.title.to_json());
         d.insert("contents".to_string(), self.contents.to_json());
         d.to_json()
     }
@@ -81,7 +79,7 @@ impl<'a, Contents: ToJson> Page<'a, Contents> {
 fn mainpage_handler(_req: &mut Request) -> IronResult<Response> {
     let mut resp = Response::new();
 
-    let data = Page { title: "Home", contents: () };
+    let data = Page { contents: () };
 
     resp.set_mut(Template::new("index", data.to_json())).set_mut(status::Ok);
     Ok(resp)
