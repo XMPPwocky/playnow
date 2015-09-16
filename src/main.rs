@@ -14,6 +14,7 @@ extern crate staticfile;
 extern crate mount;
 extern crate cookie;
 extern crate urlencoded;
+extern crate oven;
 
 use rustc_serialize::json::{ToJson, Json};
 use std::path::Path;
@@ -24,8 +25,11 @@ use std::collections::BTreeMap;
 
 mod prefs;
 
-
 const SITEADDRESS: &'static str = "localhost:8080";
+
+fn get_cookie_signing_key() -> Vec<u8> {
+    b"yargh i'm a terrible signing key don't use me".to_vec()
+}
 
 fn main() {
     env_logger::init().unwrap();
@@ -40,6 +44,7 @@ fn main() {
     mount.mount("/", router).mount("/css", staticfile::Static::new(Path::new("static/css")));
 
     let mut chain = Chain::new(mount);
+    chain.link(oven::create(get_cookie_signing_key()));
     chain.link_after(hbs::HandlebarsEngine::new("./templates", ".hbs"));
     maybe_add_logger(&mut chain);
 

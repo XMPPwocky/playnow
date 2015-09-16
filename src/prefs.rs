@@ -1,8 +1,8 @@
 use hbs::Template;
 use iron::prelude::*;
 use iron::status;
-use iron::headers;
 use cookie::Cookie;
+use oven;
 use Page;
 use urlencoded::UrlEncodedBody;
 use rustc_serialize::json::{self, ToJson};
@@ -14,9 +14,9 @@ pub struct Prefs {
 }
 
 pub fn get_prefs(req: &Request) -> Option<Prefs> {
-    req.headers
-       .get::<headers::Cookie>()
-       .and_then(|cookies| cookies.iter().find(|cookie| &cookie.name == "playnow_prefs"))
+    req.extensions
+       .get::<oven::RequestCookieJar>()
+       .and_then(|cookies| cookies.find("playnow_prefs"))
        .and_then(|cookie| json::decode::<Prefs>(&cookie.value).ok())
 }
 
@@ -74,11 +74,13 @@ pub fn update_prefs_handler(req: &mut Request) -> IronResult<Response> {
                    .to_json();
 
     resp.set_mut(Template::new("display_prefs", data)).set_mut(status::Ok);
-    resp.headers.set(headers::SetCookie(vec![Cookie::new(
-        "playnow_prefs".to_string(),
-        new_prefs.to_json().to_string(),
-        )]));
 
+    oven::init_response(&mut resp, &::get_cookie_signing_key());
+
+    resp.extensions
+        .get_mut::<oven::ResponseCookieJar>()
+        .unwrap()
+        .add(Cookie::new("playnow_prefs".to_string(), new_prefs.to_json().to_string()));
 
     Ok(resp)
 }
