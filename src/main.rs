@@ -24,6 +24,7 @@ use iron::prelude::*;
 use std::collections::BTreeMap;
 
 mod prefs;
+mod login;
 
 const SITEADDRESS: &'static str = "localhost:8080";
 
@@ -37,7 +38,9 @@ fn main() {
     let router = router!(
         get "/" => mainpage_handler,
         get "/prefs" => prefs::display_prefs_handler,
-        post "/prefs" => prefs::update_prefs_handler
+        post "/prefs" => prefs::update_prefs_handler,
+        get "/login" => login::display_login_handler,
+        post "/login" => login::process_login_handler
         );
 
     let mut mount = mount::Mount::new();
