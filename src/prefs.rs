@@ -14,8 +14,7 @@ pub struct Prefs {
 }
 
 pub fn get_prefs(req: &mut Request) -> Option<Prefs> {
-    req
-       .get::<oven::RequestCookies>()
+    req.get::<oven::RequestCookies>()
        .ok()
        .and_then(|cookies| cookies.get("playnow_prefs").cloned())
        .and_then(|cookie| json::decode::<Prefs>(&cookie.value).ok())
@@ -72,11 +71,11 @@ pub fn update_prefs_handler(req: &mut Request) -> IronResult<Response> {
 
     resp.set_mut(Template::new("display_prefs", data)).set_mut(status::Ok);
 
-    resp
-        .get_mut::<oven::ResponseCookies>()
+    resp.get_mut::<oven::ResponseCookies>()
         .ok()
         .unwrap()
-        .insert("playnow_prefs".to_string(), Cookie::new("playnow_prefs".to_string(), new_prefs.to_json().to_string()));
+        .insert("playnow_prefs".to_string(),
+                Cookie::new("playnow_prefs".to_string(), new_prefs.to_json().to_string()));
 
     Ok(resp)
 }
