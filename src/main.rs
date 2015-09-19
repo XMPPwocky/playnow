@@ -47,7 +47,7 @@ fn main() {
     mount.mount("/", router).mount("/css", staticfile::Static::new(Path::new("static/css")));
 
     let mut chain = Chain::new(mount);
-    chain.link(oven::create(get_cookie_signing_key()));
+    chain.link(oven::new(get_cookie_signing_key()));
     chain.link_after(hbs::HandlebarsEngine::new("./templates", ".hbs"));
     maybe_add_logger(&mut chain);
 

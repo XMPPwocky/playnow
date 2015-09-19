@@ -30,7 +30,5 @@ pub fn process_login_handler(req: &mut Request) -> IronResult<Response> {
 
     resp.set_mut(Template::new("display_prefs", data)).set_mut(status::Ok);
 
-    oven::init_response(&mut resp, &::get_cookie_signing_key());
-
     Ok(resp)
 }
