@@ -26,8 +26,7 @@ pub fn process_login_handler(req: &mut Request) -> IronResult<Response> {
                          .cloned()
                          .unwrap_or(String::new());;
 
-    resp.set_cookie(
-                Cookie::new("playnow_steamid".to_string(), new_steamid));
+    resp.set_cookie(Cookie::new("playnow_steamid".to_string(), new_steamid));
 
     let mut resp = Response::new();
     let data = Page { contents: () }.to_json();

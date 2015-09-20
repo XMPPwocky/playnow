@@ -15,6 +15,8 @@ extern crate mount;
 extern crate cookie;
 extern crate urlencoded;
 extern crate oven;
+extern crate redis;
+extern crate sqlite3;
 
 use rustc_serialize::json::{ToJson, Json};
 use std::path::Path;
@@ -23,8 +25,9 @@ use iron::status;
 use iron::prelude::*;
 use std::collections::BTreeMap;
 
-mod prefs;
+mod db;
 mod login;
+mod prefs;
 
 const SITEADDRESS: &'static str = "localhost:8080";
 

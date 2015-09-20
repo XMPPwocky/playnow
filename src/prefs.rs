@@ -6,6 +6,7 @@ use oven::prelude::*;
 use Page;
 use urlencoded::UrlEncodedBody;
 use rustc_serialize::json::{self, ToJson};
+use redis;
 
 // FIXME: derived Default won't do well later
 #[derive(ToJson, RustcDecodable, Default, Clone, Debug)]
@@ -14,10 +15,9 @@ pub struct Prefs {
 }
 
 pub fn get_prefs(req: &mut Request) -> Option<Prefs> {
-    req.get_cookie("playnow_prefs")
-        .ok()
-        .and_then(|maybe_cookie| maybe_cookie.clone())
-       .and_then(|cookie| json::decode::<Prefs>(&cookie.value).ok())
+    req.get_cookie("playnow_steamid")
+        // FIXME: unimplemented. Should look this up in the DB
+        .and_then(|_steamid| None) 
 }
 
 #[derive(ToJson)]
@@ -71,7 +71,8 @@ pub fn update_prefs_handler(req: &mut Request) -> IronResult<Response> {
 
     resp.set_mut(Template::new("display_prefs", data)).set_mut(status::Ok);
 
-    resp.set_cookie(Cookie::new("playnow_prefs".to_string(), new_prefs.to_json().to_string())).unwrap();
+    resp.set_cookie(Cookie::new("playnow_prefs".to_string(), new_prefs.to_json().to_string()))
+        .unwrap();
 
     Ok(resp)
 }
