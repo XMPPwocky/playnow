@@ -25,10 +25,17 @@ pub fn process_login_handler(req: &mut Request) -> IronResult<Response> {
                          .cloned()
                          .unwrap_or(String::new());;
 
+    resp.get_mut::<oven::ResponseCookies>()
+        .ok()
+        .unwrap()
+        .insert("playnow_steamid".to_string(),
+        Cookie::new("playnow_steamid".to_string(),
+        new_steamid));
+
     let mut resp = Response::new();
     let data = Page { contents: () }.to_json();
 
-    resp.set_mut(Template::new("display_prefs", data)).set_mut(status::Ok);
+    resp.set_mut(Template::new("login", data)).set_mut(status::Ok);
 
     Ok(resp)
 }
