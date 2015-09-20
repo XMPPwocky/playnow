@@ -9,7 +9,7 @@ dependencies = [
  "log 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "logger 0.0.3 (registry+https://github.com/rust-lang/crates.io-index)",
  "mount 0.0.9 (registry+https://github.com/rust-lang/crates.io-index)",
- "oven 0.2.14 (registry+https://github.com/rust-lang/crates.io-index)",
+ "oven 0.2.15 (registry+https://github.com/rust-lang/crates.io-index)",
  "redis 0.5.0 (git+https://github.com/mitsuhiko/redis-rs.git)",
  "router 0.0.15 (registry+https://github.com/rust-lang/crates.io-index)",
  "rust-sqlite 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -318,7 +318,7 @@ dependencies = [
 
 [[package]]
 name = "oven"
-version = "0.2.14"
+version = "0.2.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "cookie 0.1.21 (registry+https://github.com/rust-lang/crates.io-index)",

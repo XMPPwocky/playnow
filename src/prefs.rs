@@ -5,13 +5,20 @@ use cookie::Cookie;
 use oven::prelude::*;
 use Page;
 use urlencoded::UrlEncodedBody;
-use rustc_serialize::json::{self, ToJson};
-use redis;
+use rustc_serialize::json::ToJson;
+use sqlite3;
+use std::default::Default;
 
-// FIXME: derived Default won't do well later
-#[derive(ToJson, RustcDecodable, Default, Clone, Debug)]
+#[derive(ToJson, Clone, Debug)]
 pub struct Prefs {
     pub foo: bool,
+}
+impl Default for Prefs {
+    fn default() -> Prefs {
+        Prefs {
+            foo: false
+        }
+    }
 }
 
 pub fn get_prefs(req: &mut Request) -> Option<Prefs> {
@@ -69,8 +76,7 @@ pub fn update_prefs_handler(req: &mut Request) -> IronResult<Response> {
 
     resp.set_mut(Template::new("display_prefs", data)).set_mut(status::Ok);
 
-    resp.set_cookie(Cookie::new("playnow_prefs".to_string(), new_prefs.to_json().to_string()))
-        .unwrap();
+    resp.set_cookie(Cookie::new("playnow_prefs".to_string(), new_prefs.to_json().to_string()));
 
     Ok(resp)
 }
