@@ -15,9 +15,7 @@ pub struct Prefs {
 }
 
 pub fn get_prefs(req: &mut Request) -> Option<Prefs> {
-    req.get_cookie("playnow_steamid")
-        // FIXME: unimplemented. Should look this up in the DB
-        .and_then(|_steamid| None) 
+    req.get_cookie("playnow_steamid").and_then(|_steamid| None)
 }
 
 #[derive(ToJson)]
