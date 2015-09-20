@@ -12,13 +12,23 @@ use std::default::Default;
 #[derive(ToJson, Clone, Debug)]
 pub struct Prefs {
     pub foo: bool,
+    pub region: Region,
 }
 impl Default for Prefs {
     fn default() -> Prefs {
-        Prefs {
-            foo: false
-        }
+        Prefs { foo: false, region: NorthAmericaWest }
     }
+}
+
+#[derive(ToJson, Copy, Clone, Debug)]
+pub enum Region {
+    NorthAmericaWest,
+    NorthAmericaEast,
+    SouthAmerica,
+    EuropeWest,
+    EuropeEast,
+    Oceanic,
+    Asia,
 }
 
 pub fn get_prefs(req: &mut Request) -> Option<Prefs> {
