@@ -1,7 +1,9 @@
 {{# partial "title" }}PlayNow | Log In{{/partial}}
 {{# partial "header_title" }}Log In{{/partial}}
 {{# partial "content" }}
+{{#with contents }}
 <a href="{{loginurl}}"><img src="http://steamcommunity-a.akamaihd.net/public/images/signinthroughsteam/sits_large_border.png" /></a>
-{/partial}}
+{{/with}}
+{{/partial}}
 
 {{> base}}
