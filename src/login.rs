@@ -9,15 +9,13 @@ use rustc_serialize::json::{self, ToJson};
 
 #[derive(Debug, ToJson)]
 struct LoginPage {
-    loginurl: String
+    loginurl: String,
 }
-    
+
 pub fn display_login_handler(req: &mut Request) -> IronResult<Response> {
     let mut resp = Response::new();
 
-    let data = Page { contents: LoginPage {
-        loginurl: "http://zombo.com".to_string()
-    }}.to_json();
+    let data = Page { contents: LoginPage { loginurl: "http://zombo.com".to_string() } }.to_json();
 
     resp.set_mut(Template::new("login", data)).set_mut(status::Ok);
     Ok(resp)
