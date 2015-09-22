@@ -17,6 +17,7 @@ extern crate urlencoded;
 extern crate oven;
 extern crate redis;
 extern crate sqlite3;
+extern crate url;
 
 use rustc_serialize::json::{ToJson, Json};
 use std::path::Path;
