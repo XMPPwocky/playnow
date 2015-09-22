@@ -28,7 +28,7 @@ pub fn display_login_handler(req: &mut Request) -> IronResult<Response> {
         } else {
             panic!()
         },
-        _ => panic!()
+        _ => panic!(),
     };
     realm.fragment = None;
     realm.query = None;
@@ -38,11 +38,19 @@ pub fn display_login_handler(req: &mut Request) -> IronResult<Response> {
     params.insert("openid.mode", "checkid_setup".to_string());
     params.insert("openid.return_to", returnto.into_generic_url().serialize());
     params.insert("openid.realm", realm.into_generic_url().serialize());
-    params.insert("openid.identity", "http://specs.openid.net/auth/2.0/identifier_select".to_string());
-    params.insert("openid.claimed_id", "http://specs.openid.net/auth/2.0/identifier_select".to_string());
+    params.insert("openid.identity",
+                  "http://specs.openid.net/auth/2.0/identifier_select".to_string());
+    params.insert("openid.claimed_id",
+                  "http://specs.openid.net/auth/2.0/identifier_select".to_string());
 
     let loginparams = url::form_urlencoded::serialize(params);
-    let data = Page { contents: LoginPage { loginurl: "https://steamcommunity.com/openid/login/?".to_string() + &loginparams } }.to_json();
+    let data = Page {
+        contents: LoginPage {
+            loginurl: "https://steamcommunity.com/openid/login/?".to_string() +
+                      &loginparams,
+        },
+    }
+                   .to_json();
 
     resp.set_mut(Template::new("login", data)).set_mut(status::Ok);
     Ok(resp)
