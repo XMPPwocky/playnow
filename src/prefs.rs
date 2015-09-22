@@ -1,11 +1,12 @@
 use hbs::Template;
+use std::fmt;
 use iron::prelude::*;
 use iron::status;
 use cookie::Cookie;
 use oven::prelude::*;
 use Page;
 use urlencoded::UrlEncodedBody;
-use rustc_serialize::json::ToJson;
+use rustc_serialize::json::{Json, ToJson};
 use sqlite3;
 use std::default::Default;
 
@@ -16,11 +17,11 @@ pub struct Prefs {
 }
 impl Default for Prefs {
     fn default() -> Prefs {
-        Prefs { foo: false, region: NorthAmericaWest }
+        Prefs { foo: false, region: Region::NorthAmericaWest }
     }
 }
 
-#[derive(ToJson, Copy, Clone, Debug)]
+#[derive(FromStr, Display, Copy, Clone, Debug)]
 pub enum Region {
     NorthAmericaWest,
     NorthAmericaEast,
@@ -29,6 +30,17 @@ pub enum Region {
     EuropeEast,
     Oceanic,
     Asia,
+}
+impl fmt::Display for Region {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { 
+        fmt::Debug::fmt(self, f)
+    }
+}
+impl ToJson for Region {
+    fn to_json(&self) -> Json {
+        use std::string::ToString;
+        Json::String(self.to_string())
+    }
 }
 
 pub fn get_prefs(req: &mut Request) -> Option<Prefs> {
@@ -71,6 +83,7 @@ pub fn update_prefs_handler(req: &mut Request) -> IronResult<Response> {
                                 }
                             })
                             .unwrap_or(false),
+                            region: Region::NorthAmericaWest
             })
         }
         Err(_) => {
