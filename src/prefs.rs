@@ -32,7 +32,7 @@ pub enum Region {
     Asia,
 }
 impl fmt::Display for Region {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result { 
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         fmt::Debug::fmt(self, f)
     }
 }
@@ -83,7 +83,7 @@ pub fn update_prefs_handler(req: &mut Request) -> IronResult<Response> {
                                 }
                             })
                             .unwrap_or(false),
-                            region: Region::NorthAmericaWest
+                region: Region::NorthAmericaWest,
             })
         }
         Err(_) => {
