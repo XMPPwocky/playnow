@@ -62,7 +62,8 @@ pub fn display_prefs_handler(req: &mut Request) -> IronResult<Response> {
             updated: false,
             prefs: get_prefs(req).unwrap_or_default(),
         },
-    }.to_json();
+    }
+                   .to_json();
 
     resp.set_mut(Template::new("display_prefs", data)).set_mut(status::Ok);
     Ok(resp)
