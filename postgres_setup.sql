@@ -1,11 +1,19 @@
+CREATE TYPE region AS ENUM ('na_west', 'na_east');
+
 CREATE TABLE servers (
 	id serial primary key not null unique,
 	last_known_ip inet not null,
-	steamid64 bigint 
+	last_known_port smallint not null,
+	steamid64 bigint,
+
+	is_fallback boolean,
+
+	region region NOT NULL
 );
 
 CREATE INDEX ON servers (steamid64);
 CREATE INDEX ON servers (last_known_ip) WHERE steamid64 IS NULL;
+CREATE INDEX ON servers (is_fallback, region);
 
 CREATE TABLE player_server_relationships (
 	id serial primary key not null unique,
@@ -17,5 +25,5 @@ CREATE TABLE player_server_relationships (
 );
 
 CREATE TABLE player_preferences (
-	steamid64 primary key not null unique,
+	steamid64 bigint primary key not null unique
 );
