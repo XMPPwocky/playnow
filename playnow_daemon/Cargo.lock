@@ -11,6 +11,7 @@ dependencies = [
  "serde_json 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "steamid 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "steamwebapi 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "time 0.1.33 (registry+https://github.com/rust-lang/crates.io-index)",
  "websocket 0.13.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
@@ -249,6 +250,7 @@ dependencies = [
  "serde_json 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "steamid 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "steamwebapi 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "time 0.1.33 (registry+https://github.com/rust-lang/crates.io-index)",
  "websocket 0.13.1 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 

@@ -45,6 +45,8 @@ fn create_backend() -> backend::Backend {
 }
 
 fn main() {
+    std::thread::spawn(cron::cron_thread);
+
     let ws_server = websocket::Server::bind("127.0.0.1:2794").unwrap();
     //let mut backend = backend::Backend::new();
 

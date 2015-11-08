@@ -1,3 +1,4 @@
+use time;
 use steamid::SteamId;
 use steamwebapi;
 use redis;
@@ -87,8 +88,13 @@ impl Backend {
     }
 
     pub fn put_player_in_queue(&mut self, steamid: SteamId, server: GameServerId) -> BackendResult<()> {
+        let exptime: f64 = time::get_time().sec as f64 + 60.0;
+
+        try!(self.redis.zadd("players_queuing", steamid, exptime)); 
+
+        try!(self.redis.sadd(format!("player_queuing_for:{}", steamid.to_u64()), server.0));
+        try!(self.redis.sadd(format!("player_queue_status:{}", steamid.to_u64()), "queuing"));
         try!(self.redis.sadd(format!("server_queuers:{}", server.0), steamid));
-        try!(self.redis.set(format!("player_queue_info:{}", steamid.to_u64()), ""));
 
         Ok(())
     }
@@ -102,19 +108,28 @@ impl Backend {
 
 
     pub fn get_queue_status(&mut self, steamid: SteamId) -> BackendResult<QueueStatus> {
-        let result: Option<()> = try!(self.redis.get(format!("player_queue_info:{}", steamid.to_u64())));
+        let status: String = try!(self.redis.get(format!("player_queue_status:{}", steamid.to_u64())));
 
-        Ok(match result {
-            Some(()) => {
-                QueueStatus::Queuing
+        Ok(match &*status {
+            "queuing" => {
+                let servers: Vec<GameServerId> = try!(
+                    self.redis.smembers(format!("player_queuing_for:{}", steamid.to_u64()))
+                    );
+                QueueStatus::Queuing(servers)
             },
-            None => {
-                QueueStatus::NotQueuing
-            }
+            _ => QueueStatus::NotQueuing
         })
     }
 
     pub fn leave_queue(&mut self, steamid: SteamId) -> BackendResult<()> {
-        unimplemented!()
+        let changes: i64 = self.redis.zrem("players_queuing", steamid).unwrap();
+        debug_assert_eq!(changes, 1);
+        let changes: i64 = self.redis.del(format!("player_queue_status:{}", steamid.to_u64())).unwrap();
+        debug_assert_eq!(changes, 1);
+        let changes: i64 = self.redis.del(format!("player_queuing_for:{}", steamid.to_u64())).unwrap();
+        debug_assert_eq!(changes, 1);
+        let changes: i64 = self.redis.srem("server_queuers", steamid).unwrap();
+        debug_assert_eq!(changes, 1);
+        Ok(())
     }
 }

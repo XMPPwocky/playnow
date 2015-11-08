@@ -12,6 +12,7 @@ websocket = "~0.13.1"
 quick-error = "~0.1.4"
 postgres = "~0.10"
 redis = "~0.5.1"
+time = "~0.1.33"
 
 [dependencies.steamid]
 version = "0.3.0"
