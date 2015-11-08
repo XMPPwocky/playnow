@@ -52,9 +52,8 @@ impl Backend {
     }
 
     pub fn auth_request(&mut self, sessionid: &str) -> BackendResult<Option<SteamId>> { 
-        // FIXME: delete the sessionid too.
-
         let steamid: Option<SteamId> = try!(self.redis.get(format!("session_steamid:{}", sessionid)));
+        try!(self.redis.del(format!("session_steamid:{}", sessionid)));
 
         if let Some(steamid) = steamid {
             debug_assert_eq!(steamid.get_universe(), Some(::steamid::Universe::Public));

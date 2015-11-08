@@ -6,9 +6,9 @@ CREATE TABLE servers (
 	last_known_port smallint not null,
 	steamid64 bigint,
 
-	is_fallback boolean,
+	is_fallback boolean not null,
 
-	region region NOT NULL
+	region region not null, 
 );
 
 CREATE INDEX ON servers (steamid64);
