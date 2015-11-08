@@ -93,7 +93,7 @@ impl Backend {
         try!(self.redis.zadd("players_queuing", steamid, exptime)); 
 
         try!(self.redis.sadd(format!("player_queuing_for:{}", steamid.to_u64()), server.0));
-        try!(self.redis.sadd(format!("player_queue_status:{}", steamid.to_u64()), "queuing"));
+        try!(self.redis.set(format!("player_queue_status:{}", steamid.to_u64()), "queuing"));
         try!(self.redis.sadd(format!("server_queuers:{}", server.0), steamid));
 
         Ok(())
@@ -108,10 +108,11 @@ impl Backend {
 
 
     pub fn get_queue_status(&mut self, steamid: SteamId) -> BackendResult<QueueStatus> {
-        let status: String = try!(self.redis.get(format!("player_queue_status:{}", steamid.to_u64())));
+        let status: Option<String> = try!(self.redis.get(format!("player_queue_status:{}", steamid.to_u64())));
+        let status = status.as_ref().map(|s| &**s);
 
-        Ok(match &*status {
-            "queuing" => {
+        Ok(match status {
+            Some("queuing") => {
                 let servers: Vec<GameServerId> = try!(
                     self.redis.smembers(format!("player_queuing_for:{}", steamid.to_u64()))
                     );
@@ -122,14 +123,10 @@ impl Backend {
     }
 
     pub fn leave_queue(&mut self, steamid: SteamId) -> BackendResult<()> {
-        let changes: i64 = self.redis.zrem("players_queuing", steamid).unwrap();
-        debug_assert_eq!(changes, 1);
-        let changes: i64 = self.redis.del(format!("player_queue_status:{}", steamid.to_u64())).unwrap();
-        debug_assert_eq!(changes, 1);
-        let changes: i64 = self.redis.del(format!("player_queuing_for:{}", steamid.to_u64())).unwrap();
-        debug_assert_eq!(changes, 1);
-        let changes: i64 = self.redis.srem("server_queuers", steamid).unwrap();
-        debug_assert_eq!(changes, 1);
+        let _changes: i64 = self.redis.zrem("players_queuing", steamid).unwrap();
+        let _changes: i64 = self.redis.del(format!("player_queue_status:{}", steamid.to_u64())).unwrap();
+        let _changes: i64 = self.redis.del(format!("player_queuing_for:{}", steamid.to_u64())).unwrap();
+        let _changes: i64 = self.redis.srem("server_queuers", steamid).unwrap();
         Ok(())
     }
 }
