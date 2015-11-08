@@ -9,10 +9,10 @@ extern crate steamid;
 #[macro_use]
 extern crate quick_error;
 extern crate postgres;
+extern crate playnow_core;
 
 use std::thread;
 
-mod backend;
 mod wshandler;
 
 #[derive(Clone, PartialEq, Eq, Debug)]
@@ -26,18 +26,16 @@ enum QueueStatus {
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
 struct GameServerId(u32);
 
-fn get_apikey() -> String {
-    match std::env::var("STEAM_APIKEY") {
-        Ok(key) => key,
-        _ => panic!("No Steam API key found. Set the STEAM_APIKEY environment variable.")
+fn bravely_get_env(name: &str) -> String {
+    match std::env::var(name) {
+        Ok(value) => value,
+        _ => panic!("Environment variable {} not set.", name)
     }
 }
-fn get_postgres_url() -> String {
-    match std::env::var("POSTGRES_URL") {
-        Ok(key) => key,
-        _ => panic!("No Postgres URI found. Set the POSTGRES_URL environment variable.")
-    }
-}
+
+fn get_apikey() -> String { bravely_get_env("STEAM_APIKEY") }
+fn get_postgres_url() -> String { bravely_get_env("POSTGRES_URL") }
+fn get_redis_url() -> String { bravely_get_env("REDIS_URL") }
 
 fn main() {
     let ws_server = websocket::Server::bind("127.0.0.1:2794").unwrap();

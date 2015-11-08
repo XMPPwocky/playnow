@@ -3,6 +3,7 @@ name = "playnow_daemon"
 version = "0.1.0"
 dependencies = [
  "hyper 0.6.15 (registry+https://github.com/rust-lang/crates.io-index)",
+ "playnow_core 0.1.0",
  "postgres 0.10.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "quick-error 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "redis 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -235,6 +236,21 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 name = "pkg-config"
 version = "0.3.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "playnow_core"
+version = "0.1.0"
+dependencies = [
+ "hyper 0.6.15 (registry+https://github.com/rust-lang/crates.io-index)",
+ "postgres 0.10.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "quick-error 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "redis 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde 0.6.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "serde_json 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "steamid 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "steamwebapi 0.4.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "websocket 0.13.1 (registry+https://github.com/rust-lang/crates.io-index)",
+]
 
 [[package]]
 name = "pnacl-build-helper"

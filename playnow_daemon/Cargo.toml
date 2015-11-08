@@ -16,3 +16,6 @@ redis = "~0.5.1"
 [dependencies.steamid]
 version = "0.3.0"
 features = ["redis-support"]
+
+[dependencies.playnow_core]
+path = "../playnow_core"
