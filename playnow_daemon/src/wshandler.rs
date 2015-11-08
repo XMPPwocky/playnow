@@ -1,4 +1,5 @@
 use playnow_core::backend;
+use create_backend;
 use websocket;
 use websocket::{Message, Sender, Receiver};
 use websocket::message::Type;
@@ -19,12 +20,7 @@ pub fn handler(connection: WebSocketConnection) {
     println!("connect");
 
     // FIXME: this is terrible
-    let mut backend = backend::Backend::new(
-        &::get_apikey(),
-        &::get_redis_url(),
-        &::get_postgres_url()
-        );
-
+    let mut backend = create_backend(); 
 
     let request = connection.read_request().unwrap();
     request.validate().unwrap();

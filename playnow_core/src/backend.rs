@@ -24,11 +24,11 @@ quick_error! {
 pub type BackendResult<T> = Result<T, BackendError>;
 
 pub struct Backend {
-    steam_webapi: steamwebapi::ApiClient,
+    pub steam_webapi: steamwebapi::ApiClient,
 
-    redis: redis::Connection,
+    pub redis: redis::Connection,
 
-    postgres: postgres::Connection
+    pub postgres: postgres::Connection
 }
 
 impl Backend {
@@ -55,8 +55,10 @@ impl Backend {
 
         let steamid: Option<SteamId> = try!(self.redis.get(format!("session_steamid:{}", sessionid)));
 
-        debug_assert_eq!(steamid.and_then(SteamId::get_universe), Some(::steamid::Universe::Public));
-        debug_assert_eq!(steamid.and_then(SteamId::get_type), Some(::steamid::AccountType::Individual));
+        if let Some(steamid) = steamid {
+            debug_assert_eq!(steamid.get_universe(), Some(::steamid::Universe::Public));
+            debug_assert_eq!(steamid.get_type(), Some(::steamid::AccountType::Individual));
+        }
 
         Ok(steamid)
     }
