@@ -1,0 +1,18 @@
+[package]
+name = "playnow_daemon"
+version = "0.1.0"
+authors = ["XMPPwocky <nttheis@gmail.com>"]
+
+[dependencies]
+hyper = "0.6.13"
+serde = "*"
+serde_json = "*"
+steamwebapi = "~0.4.0"
+websocket = "~0.13.1"
+quick-error = "~0.1.4"
+postgres = "~0.10"
+redis = "~0.5.1"
+
+[dependencies.steamid]
+version = "0.3.0"
+features = ["redis-support"]
