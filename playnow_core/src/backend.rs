@@ -32,12 +32,14 @@ pub struct Backend {
 }
 
 impl Backend {
-    pub fn new() -> Backend {
-        let webapi = steamwebapi::ApiClient::new(::get_apikey());
-        let redis_client = redis::Client::open("redis://127.0.0.1/").unwrap();
+    pub fn new(steam_apikey: &str,
+              redis_url: &str,
+              postgres_url: &str) -> Backend {
+        let webapi = steamwebapi::ApiClient::new(steam_apikey.to_owned());
+        let redis_client = redis::Client::open(redis_url).unwrap();
         let redis = redis_client.get_connection().unwrap();
         let postgres = postgres::Connection::connect(
-            &::get_postgres_url() as &str,
+            postgres_url,
             &postgres::SslMode::None
             ).unwrap();
 
