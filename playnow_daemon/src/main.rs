@@ -2,10 +2,7 @@
 
 #[macro_use]
 extern crate quick_error;
-extern crate serde;
-extern crate serde_json;
 extern crate steamwebapi;
-extern crate hyper;
 extern crate redis;
 extern crate websocket;
 extern crate steamid;
@@ -14,10 +11,8 @@ extern crate playnow_core;
 extern crate time;
 
 use playnow_core::backend;
-use std::thread;
 
 mod cron;
-mod wshandler;
 
 #[derive(Clone, PartialEq, Eq, Debug)]
 enum QueueStatus {
@@ -46,18 +41,4 @@ fn create_backend() -> backend::Backend {
 
 fn main() {
     std::thread::spawn(cron::cron_thread);
-
-    let ws_server = websocket::Server::bind("127.0.0.1:2794").unwrap();
-    //let mut backend = backend::Backend::new();
-
-    for connection in ws_server {
-        if let Ok(connection) = connection {
-            thread::spawn(move || {
-                wshandler::handler(connection) 
-            });
-        } else if let Err(e) = connection {
-            println!("Error: {:?}", e);
-            break;
-        }
-    }
 }
