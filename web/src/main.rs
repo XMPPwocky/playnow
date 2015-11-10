@@ -16,9 +16,8 @@ extern crate cookie;
 extern crate urlencoded;
 extern crate oven;
 extern crate steamid;
-extern crate r2d2;
-extern crate r2d2_redis;
-extern crate r2d2_postgres;
+extern crate plugin;
+extern crate playnow_core;
 
 use rustc_serialize::json::{ToJson, Json};
 use std::path::Path;
@@ -26,6 +25,7 @@ use hbs::Template;
 use iron::status;
 use iron::prelude::*;
 use std::collections::BTreeMap;
+use playnow_core::backend;
 
 mod prefs;
 mod login;
@@ -81,6 +81,18 @@ impl<'a, Contents: ToJson> Page<'a, Contents> {
         d.to_json()
     }
 }
+
+struct RequestBackend;
+impl plugin::Plugin<Request<'a, 'b>> for RequestBackend {
+    type Error = ();
+    fn eval(req: &mut Request) -> Result<backend::Backend, Error> {
+        match req.extensions.get::<RequestBackendPool>() {
+            Some(pool) => Ok(pool.get_backend()),
+            None => Err(())
+        }
+    }
+}
+            
 
 fn mainpage(_req: &mut Request) -> IronResult<Response> {
     let mut resp = Response::new();

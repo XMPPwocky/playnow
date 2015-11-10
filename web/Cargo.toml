@@ -18,3 +18,7 @@ tojson_macros = "0.1.5"
 urlencoded = "*"
 oven = "0.2.5"
 steamid = "0.3.0"
+plugin = "*"
+
+[dependencies.playnow_core]
+path = "../playnow_core"
