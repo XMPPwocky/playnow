@@ -28,6 +28,7 @@ quick_error! {
 }
 pub type BackendResult<T> = Result<T, BackendError>;
 
+#[derive(Clone)]
 pub struct BackendPool {
     steam_apikey: String,
 
@@ -153,3 +154,21 @@ impl Backend {
         Ok(())
     }
 }
+
+fn bravely_get_env(name: &str) -> String {
+    use std::env;
+
+    match env::var(name) {
+        Ok(value) => value,
+        _ => panic!("Environment variable {} not set.", name)
+    }
+}
+pub fn create_backend_pool() -> BackendPool {
+    BackendPool::new(
+        &bravely_get_env("STEAM_APIKEY"),
+        &bravely_get_env("REDIS_URL"),
+        &bravely_get_env("POSTGRES_URL")
+        )
+}
+
+

@@ -63,4 +63,3 @@ impl redis::ToRedisArgs for GameServerId {
         vec![s.as_bytes().to_vec()]
     }
 }
-

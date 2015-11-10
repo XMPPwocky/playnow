@@ -11,6 +11,7 @@ extern crate playnow_core;
 extern crate time;
 
 use playnow_core::backend;
+use playnow_core::create_backend_pool;
 
 mod cron;
 
@@ -24,20 +25,6 @@ enum QueueStatus {
 
 #[derive(Copy, Clone, PartialEq, Eq, Debug)]
 struct GameServerId(u32);
-
-fn bravely_get_env(name: &str) -> String {
-    match std::env::var(name) {
-        Ok(value) => value,
-        _ => panic!("Environment variable {} not set.", name)
-    }
-}
-fn create_backend_pool() -> backend::BackendPool {
-    backend::BackendPool::new(
-        &bravely_get_env("STEAM_APIKEY"),
-        &bravely_get_env("REDIS_URL"),
-        &bravely_get_env("POSTGRES_URL")
-        )
-}
 
 fn main() {
     std::thread::spawn(cron::cron_thread);

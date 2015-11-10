@@ -21,4 +21,4 @@ steamid = "0.3.0"
 plugin = "*"
 
 [dependencies.playnow_core]
-path = "../playnow_core"
+path = "../core"

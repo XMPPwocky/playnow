@@ -51,6 +51,7 @@ fn main() {
     mount.mount("/", router).mount("/css", staticfile::Static::new(Path::new("static/css")));
 
     let mut chain = Chain::new(mount);
+    chain.link_before(BackendPoolMiddleware { pool: backend::create_backend_pool() });
     chain.link(oven::new(get_cookie_signing_key()));
     chain.link_after(hbs::HandlebarsEngine::new("./templates", ".hbs"));
     maybe_add_logger(&mut chain);
@@ -82,10 +83,28 @@ impl<'a, Contents: ToJson> Page<'a, Contents> {
     }
 }
 
+struct BackendPoolMiddleware {
+    pool: backend::BackendPool
+}
+impl iron::BeforeMiddleware for BackendPoolMiddleware {
+    fn before(&self, req: &mut Request) -> IronResult<()> {
+        req.extensions.insert::<RequestBackendPool>(self.pool.clone());
+        Ok(())
+    }
+}
+struct RequestBackendPool;
+impl iron::typemap::Key for RequestBackendPool {
+    type Value = backend::BackendPool;
+}
+
 struct RequestBackend;
-impl plugin::Plugin<Request<'a, 'b>> for RequestBackend {
+impl iron::typemap::Key for RequestBackend {
+    type Value = backend::Backend;
+}
+
+impl<'a, 'b> plugin::Plugin<Request<'a, 'b>> for RequestBackend {
     type Error = ();
-    fn eval(req: &mut Request) -> Result<backend::Backend, Error> {
+    fn eval(req: &mut Request) -> Result<backend::Backend, ()> {
         match req.extensions.get::<RequestBackendPool>() {
             Some(pool) => Ok(pool.get_backend()),
             None => Err(())
