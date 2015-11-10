@@ -6,6 +6,10 @@ use redis::Commands;
 use postgres;
 use QueueStatus;
 use GameServerId;
+use r2d2;
+use r2d2_redis::RedisConnectionManager;
+use r2d2_postgres::PostgresConnectionManager;
+use r2d2::PooledConnection;
 
 quick_error! {
     #[derive(Debug)]
@@ -24,32 +28,52 @@ quick_error! {
 }
 pub type BackendResult<T> = Result<T, BackendError>;
 
+pub struct BackendPool {
+    steam_apikey: String,
+
+    redis: r2d2::Pool<RedisConnectionManager>,
+
+    postgres: r2d2::Pool<PostgresConnectionManager>
+}
+impl BackendPool {
+    pub fn new(steam_apikey: &str,
+              redis_url: &str,
+              postgres_url: &str) -> BackendPool {
+
+        use std::default::Default;
+
+        let redis = RedisConnectionManager::new(redis_url).unwrap(); 
+        let postgres = PostgresConnectionManager::new(
+            postgres_url,
+            postgres::SslMode::None
+            ).unwrap();
+
+        BackendPool {
+            steam_apikey: steam_apikey.to_owned(),
+            redis: r2d2::Pool::new(Default::default(), redis).unwrap(),
+            postgres: r2d2::Pool::new(Default::default(), postgres).unwrap(),
+        }
+    }
+
+    pub fn get_backend(&self) -> Backend {
+        Backend {
+            steam_webapi: steamwebapi::ApiClient::new(self.steam_apikey.clone()),
+            redis: self.redis.get().unwrap(),
+            postgres: self.postgres.get().unwrap()
+        }
+    }
+
+}
+
 pub struct Backend {
     pub steam_webapi: steamwebapi::ApiClient,
 
-    pub redis: redis::Connection,
+    pub redis: PooledConnection<RedisConnectionManager>,
 
-    pub postgres: postgres::Connection
+    pub postgres: PooledConnection<PostgresConnectionManager>
 }
 
 impl Backend {
-    pub fn new(steam_apikey: &str,
-              redis_url: &str,
-              postgres_url: &str) -> Backend {
-        let webapi = steamwebapi::ApiClient::new(steam_apikey.to_owned());
-        let redis_client = redis::Client::open(redis_url).unwrap();
-        let redis = redis_client.get_connection().unwrap();
-        let postgres = postgres::Connection::connect(
-            postgres_url,
-            &postgres::SslMode::None
-            ).unwrap();
-
-        Backend {
-            steam_webapi: webapi,
-            redis: redis,
-            postgres: postgres
-        }
-    }
 
     pub fn auth_request(&mut self, sessionid: &str) -> BackendResult<Option<SteamId>> { 
         let steamid: Option<SteamId> = try!(self.redis.get(format!("session_steamid:{}", sessionid)));

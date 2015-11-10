@@ -10,6 +10,9 @@ extern crate steamid;
 extern crate quick_error;
 extern crate postgres;
 extern crate time;
+extern crate r2d2;
+extern crate r2d2_postgres;
+extern crate r2d2_redis;
 
 pub mod backend;
 

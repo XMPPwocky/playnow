@@ -245,6 +245,9 @@ dependencies = [
  "hyper 0.6.15 (registry+https://github.com/rust-lang/crates.io-index)",
  "postgres 0.10.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "quick-error 0.1.4 (registry+https://github.com/rust-lang/crates.io-index)",
+ "r2d2 0.6.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "r2d2_postgres 0.9.3 (git+https://github.com/sfackler/r2d2-postgres)",
+ "r2d2_redis 0.1.0 (git+https://github.com/nevdelap/r2d2-redis/)",
  "redis 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde 0.6.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "serde_json 0.6.0 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -279,6 +282,33 @@ dependencies = [
 name = "quick-error"
 version = "0.1.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
+
+[[package]]
+name = "r2d2"
+version = "0.6.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+dependencies = [
+ "log 0.3.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "time 0.1.33 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "r2d2_postgres"
+version = "0.9.3"
+source = "git+https://github.com/sfackler/r2d2-postgres#f66ed120d3b5cbd4fb9bbfb6edc17b2ffdbfcf7d"
+dependencies = [
+ "postgres 0.10.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "r2d2 0.6.1 (registry+https://github.com/rust-lang/crates.io-index)",
+]
+
+[[package]]
+name = "r2d2_redis"
+version = "0.1.0"
+source = "git+https://github.com/nevdelap/r2d2-redis/#623a9fb839c7d658264fbc5c6b6245148f6c0e52"
+dependencies = [
+ "r2d2 0.6.1 (registry+https://github.com/rust-lang/crates.io-index)",
+ "redis 0.5.1 (registry+https://github.com/rust-lang/crates.io-index)",
+]
 
 [[package]]
 name = "rand"

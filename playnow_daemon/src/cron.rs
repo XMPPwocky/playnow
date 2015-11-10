@@ -5,7 +5,7 @@ use steamid::SteamId;
 pub fn cron_thread() {
     use redis::Commands;
 
-    let mut backend = ::create_backend(); 
+    let mut backend = ::create_backend_pool().get_backend(); 
 
     loop {
         let starttime = time::get_time().sec as f64;

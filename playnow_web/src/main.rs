@@ -15,6 +15,10 @@ extern crate mount;
 extern crate cookie;
 extern crate urlencoded;
 extern crate oven;
+extern crate steamid;
+extern crate r2d2;
+extern crate r2d2_redis;
+extern crate r2d2_postgres;
 
 use rustc_serialize::json::{ToJson, Json};
 use std::path::Path;
@@ -24,6 +28,7 @@ use iron::prelude::*;
 use std::collections::BTreeMap;
 
 mod prefs;
+mod login;
 
 const SITEADDRESS: &'static str = "localhost:8080";
 
@@ -35,16 +40,18 @@ fn main() {
     env_logger::init().unwrap();
 
     let router = router!(
-        get "/" => mainpage_handler,
-        get "/prefs" => prefs::display_prefs_handler,
-        post "/prefs" => prefs::update_prefs_handler
+        get "/" => mainpage,
+        get "/prefs" => prefs::display_prefs,
+        post "/prefs" => prefs::update_prefs,
+        get "/login" => login::display_login,
+        post "/login" => login::process_login
         );
 
     let mut mount = mount::Mount::new();
     mount.mount("/", router).mount("/css", staticfile::Static::new(Path::new("static/css")));
 
     let mut chain = Chain::new(mount);
-    chain.link(oven::create(get_cookie_signing_key()));
+    chain.link(oven::new(get_cookie_signing_key()));
     chain.link_after(hbs::HandlebarsEngine::new("./templates", ".hbs"));
     maybe_add_logger(&mut chain);
 
@@ -75,7 +82,7 @@ impl<'a, Contents: ToJson> Page<'a, Contents> {
     }
 }
 
-fn mainpage_handler(_req: &mut Request) -> IronResult<Response> {
+fn mainpage(_req: &mut Request) -> IronResult<Response> {
     let mut resp = Response::new();
 
     let data = Page { title: "Home", contents: () };

@@ -31,8 +31,8 @@ fn bravely_get_env(name: &str) -> String {
         _ => panic!("Environment variable {} not set.", name)
     }
 }
-fn create_backend() -> backend::Backend {
-    backend::Backend::new(
+fn create_backend_pool() -> backend::BackendPool {
+    backend::BackendPool::new(
         &bravely_get_env("STEAM_APIKEY"),
         &bravely_get_env("REDIS_URL"),
         &bravely_get_env("POSTGRES_URL")
